@@ -1,6 +1,7 @@
 const tmppath = require('../util/tmppath'),
 	readjson = require('../util/readjson'),
-	runNpm = require('../util/run-npm'),
+	runDepInstall = require('../util/run-dep-install'),
+	runDepCommand = require('../util/run-dep-manager-command'),
 	fsUtil = require('../util/fs-util'),
 	fs = require('fs'),
 	fsPromise = require('../util/fs-promise'),
@@ -41,7 +42,7 @@ module.exports = function collectFiles(sourcePath, useLocalDependencies, optiona
 				targetDir = tmppath(),
 				expectedName = expectedArchiveName(packageConfig);
 			fsUtil.ensureCleanDir(packDir);
-			return runNpm(packDir, 'pack "' + path.resolve(sourcePath) + '"', logger)
+			return runDepCommand(packDir, 'npm', 'pack "' + path.resolve(sourcePath) + '"', logger)
 			.then(() => extractTarGz(path.join(packDir, expectedName), packDir))
 			.then(() => fsPromise.renameAsync(path.join(packDir, 'package'), targetDir))
 			.then(() => {
@@ -54,7 +55,7 @@ module.exports = function collectFiles(sourcePath, useLocalDependencies, optiona
 				fsUtil.copy(path.join(sourcePath, 'node_modules'), targetDir);
 				return Promise.resolve(targetDir);
 			} else {
-				return runNpm(targetDir, 'install --production', logger);
+				return runDepInstall(targetDir, logger);
 			}
 		},
 		rewireRelativeDependencies = function (targetDir) {

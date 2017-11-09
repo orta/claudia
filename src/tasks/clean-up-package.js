@@ -1,14 +1,14 @@
 const path = require('path'),
 	fsUtil = require('../util/fs-util'),
 	fsPromise = require('../util/fs-promise'),
-	runNpm = require('../util/run-npm');
+	runDepInstall = require('../util/run-dep-install');
 module.exports = function cleanUpPackage(packageDir, options, logger) {
 	'use strict';
 	const cleanUpDependencies = function () {
 			if (options['optional-dependencies'] === false) {
 				logger.logApiCall('removing optional dependencies');
 				fsUtil.rmDir(path.join(packageDir, 'node_modules'));
-				return runNpm(packageDir, 'install --production --no-optional', logger);
+				return runDepInstall(packageDir, logger);
 			} else {
 				return Promise.resolve();
 			}
