@@ -8,7 +8,7 @@ module.exports = function runCommand(dir, app, options, logger) {
 	'use strict';
 	const cwd = process.cwd(),
 		cmdlog = tmppath(),
-		command = app + options;
+		command = `${app} ${options}`;
 	let env = process.env;
 	logger.logApiCall(command);
 	process.chdir(dir);
